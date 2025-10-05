@@ -153,6 +153,12 @@ class Maze {
         }
     }
 
+    preVisit(cells) {
+        for (const [x, y] of cells) {
+            this.grid[x][y].visited = true;
+        }
+    }
+
     generate() {
         const start_x = randomInteger(0, this.cols);
         const start_y = randomInteger(0, this.rows);
@@ -179,7 +185,12 @@ class Maze {
                 currentCell = randomNeighborCell;
                 currentCell.visited = true;
             } else {
-                currentCell = stack.pop();
+                if (Math.random() < 0.2) {
+                    const ranInt = randomInteger(0, stack.length)
+                    currentCell = stack.splice(ranInt, 1)[0];
+                } else {
+                    currentCell = stack.pop();
+                }
             }
         }
     }
@@ -190,6 +201,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const maze = new Maze(20, 20, canvas);
 
     // TODO: Fjern nogle af væggene på en smart måde.
+    maze.preVisit([
+        // L
+        [2,8],[2,9],[2,10],[2,11],[3,11],[4,11],
+
+        // U
+        [6,8],[6,9],[6,10],[6,11],[7,11],[8,8],[8,9],[8,10],[8,11],
+
+        // N
+        [10,8],[10,9],[10,10],[10,11],[11,9],[12,10],[13,11],[13,8],[13,9],[13,10],
+
+        // D
+        [15,8],[15,9],[15,10],[15,11],[16,8],[16,11],[17,9],[17,10]
+    ]);
+
+
     maze.generate();
 
     maze.draw();
